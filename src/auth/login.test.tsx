@@ -47,7 +47,7 @@ it('submits credentials once, displays loading, and returns to the requested rou
   expect(JSON.parse(options.body)).toEqual({ identifier: 'admin@example.com', password: 'valid-password-123' })
   await act(async () => resolve(json(success)))
   await screen.findByRole('heading', { name: 'Customers' })
-  expect(screen.getByText('Admin Laundry · Admin')).toBeTruthy()
+  expect(screen.getByLabelText('Akun aktif').textContent).toContain('Admin Laundry')
   expect(sessionStorage.getItem(SESSION_KEY)).not.toContain('password')
 })
 

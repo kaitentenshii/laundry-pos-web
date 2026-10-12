@@ -5,6 +5,10 @@ import App from './App'
 import { AuthProvider } from './auth/AuthProvider'
 import './config/env'
 import './styles/index.css'
+import '@fontsource/outfit/400.css'
+import '@fontsource/outfit/500.css'
+import '@fontsource/outfit/600.css'
+import './styles/workspace.css'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>

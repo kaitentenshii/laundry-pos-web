@@ -8,6 +8,7 @@ export class ApiError extends Error {
 }
 
 const messages: Record<string, string> = {
+  forbidden: 'Anda tidak memiliki izin untuk menggunakan fitur ini.',
   invalid_credentials: 'Username, email, atau kata sandi tidak sesuai.',
   account_inactive: 'Akun Anda tidak aktif. Hubungi administrator laundry.',
   invalid_request: 'Periksa username atau email dan kata sandi Anda.',
