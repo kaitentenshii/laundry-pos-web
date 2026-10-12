@@ -1,102 +1,58 @@
-# Laundry POS API
+# Laundry POS Web
 
-Backend API for the Laundry POS application, built with Go and Chi.
+Frontend foundation for Laundry POS, built with React, TypeScript, Vite, Tailwind CSS, and React Router.
 
 ## Requirements
 
-- Go 1.22 or newer
-- Docker with Compose, or a PostgreSQL 17 instance
+- Node.js 22.22+ on the 22.x release line, or Node.js 24+ (recommended)
+- npm
 
 ## Run locally
 
-Copy `.env.example` to `.env`, replace the placeholder database password, and export the values in your shell. Then start PostgreSQL:
+From this repository's root:
 
 ```sh
-docker compose up -d postgres
+npm ci
+cp .env.example .env
+npm run dev
 ```
 
-Run the API:
+On PowerShell, use `Copy-Item .env.example .env` instead of `cp`.
+Open the local URL printed by Vite (normally `http://localhost:5173`). The starter runs without a backend.
 
-```sh
-go mod download
-go run ./cmd/api
-```
-
-The server listens on port `8080` by default. Configuration is read from these environment variables:
+## Environment configuration
 
 | Variable | Default | Description |
 | --- | --- | --- |
-| `APP_ENV` | `development` | Application environment name |
-| `PORT` | `8080` | HTTP port, from 1 to 65535 |
-| `SHUTDOWN_TIMEOUT` | `10s` | Graceful shutdown timeout |
-| `DATABASE_URL` | required | PostgreSQL connection string |
-| `DATABASE_CONNECT_TIMEOUT` | `5s` | Initial database connection timeout |
-| `MIGRATIONS_PATH` | `file://migrations` | Migration file source URL |
+| `VITE_API_BASE_URL` | `http://localhost:8080` | Absolute HTTP/HTTPS backend base URL |
 
-Check that the API is running:
+Configuration is read centrally in `src/config/env.ts`. Import `env.apiBaseUrl` when adding API services. Trailing slashes are removed. Invalid URLs fail during startup rather than silently using an incorrect address.
 
-```sh
-curl http://localhost:8080/health
-```
+Vite embeds `VITE_` variables in the browser bundle: never use them for secrets. Restart the dev server after changing `.env`; rebuild to change production configuration. Local environment files are ignored by Git.
 
-Expected response:
-
-```json
-{"status":"ok"}
-```
-
-Verify that the API can reach PostgreSQL:
+## Commands
 
 ```sh
-curl http://localhost:8080/ready
+npm run lint     # ESLint
+npm run build    # TypeScript checks and production build into dist/
+npm run preview # Serve the production build locally
 ```
-
-Expected response:
-
-```json
-{"status":"ready"}
-```
-
-If PostgreSQL cannot be reached, `/ready` returns HTTP `503`. The application also verifies the connection during startup and exits with a clear error when PostgreSQL is unavailable.
-
-## Database migrations
-
-Run every pending migration:
-
-```sh
-go run ./cmd/migrate up
-```
-
-Roll back the latest migration:
-
-```sh
-go run ./cmd/migrate down
-```
-
-Roll back a specific number of migrations:
-
-```sh
-go run ./cmd/migrate down 2
-```
-
-Migration files live in `migrations/` and use the sequential naming format `<version>_<description>.up.sql` and `<version>_<description>.down.sql`. The migration tool reports invalid configuration, connection failures, dirty schema state, and SQL errors without logging the database connection string.
 
 ## Project structure
 
 ```text
-cmd/api/          Application entry point
-internal/app/     Application lifecycle and HTTP server
-internal/config/  Environment-based configuration
-internal/httpapi/ HTTP routing, handlers, and responses
-internal/migration/ Database migration runner
-internal/service/ Business logic
-internal/store/   Database access and PostgreSQL connection pool
-migrations/       Versioned PostgreSQL schema changes
+src/
+  components/  Shared UI components
+  config/      Environment configuration
+  layouts/     Shared application layout and navigation
+  pages/       Route-level pages
+  styles/      Tailwind entry point and global styles
+  App.tsx      Route definitions
+  main.tsx     Application entry point and router provider
 ```
 
-## Test
+The starter includes an overview, customer and service sections marked as coming soon, and a fallback page for unknown routes. Login and operational features are separate follow-up issues. No authentication or API requests are implemented yet.
 
-```sh
-go test ./...
-```
+## Deployment
 
+Serve the generated `dist/` directory with a static host. Configure the host to serve `index.html` for application routes such as `/customers` and `/services`, so direct links and browser refresh work with `BrowserRouter`.
