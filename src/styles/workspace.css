@@ -139,3 +139,4 @@
 .order-panel .customer-search .login-field { flex: 1; min-width: 0; }
 @media (max-width: 1000px) { .order-grid { grid-template-columns: minmax(0, 1fr); } }
 @media (max-width: 600px) { .order-item-fields { grid-template-columns: minmax(0, 1fr); } .order-total { font-size: 32px; } }
+.order-line { display: flex; flex-direction: column; gap: 20px; }
