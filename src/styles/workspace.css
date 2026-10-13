@@ -171,3 +171,4 @@
 .payment-confirm input { accent-color: var(--teal); width: 18px; height: 18px; }
 @media (max-width: 1000px) { .payment-grid { grid-template-columns: minmax(0,1fr); } }
 .payment-receipt { margin: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 12px; font-size: 13px; border-top: 1px solid var(--border); padding-top: 20px; overflow-wrap: anywhere; } .payment-receipt dt { color: var(--muted); } .payment-receipt dd { margin: 0; }
+.order-timeline { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 16px; } .order-timeline li { display: flex; justify-content: space-between; align-items: start; gap: 16px; } .order-timeline time { display: block; color: var(--muted); font-size: 12px; margin-top: 4px; } .history-latest { margin-left: 8px; font-size: 11px; font-weight: 400; color: var(--teal); }
