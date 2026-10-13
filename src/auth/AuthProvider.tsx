@@ -82,5 +82,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }, [session, clearSession])
 
-  return <AuthContext.Provider value={{ session, checking, notice, login, logout, authorizedRequest }}>{children}</AuthContext.Provider>
+  const refreshUser = useCallback(async () => {
+    if (!session) return
+    const response = await authorizedRequest('/auth/me')
+    const body: unknown = await response.json().catch(() => null)
+    const user = parseUser(typeof body === 'object' && body !== null && 'user' in body ? body.user : null)
+    const refreshed = { ...session, user }
+    saveSession(refreshed)
+    setSession(refreshed)
+  }, [session, authorizedRequest])
+
+  return <AuthContext.Provider value={{ session, checking, notice, login, logout, authorizedRequest, refreshUser }}>{children}</AuthContext.Provider>
 }
