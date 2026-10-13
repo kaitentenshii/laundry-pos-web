@@ -223,3 +223,4 @@
 .customer-opt-in input:checked { background: var(--teal); border-color: var(--teal); }
 .customer-opt-in input:checked::after { content: '✓'; color: white; font-family: 'Outfit', sans-serif; font-size: 14px; font-weight: 500; line-height: 1; }
 .customer-opt-in input:focus-visible { outline: 2px solid var(--teal); outline-offset: 3px; }
+.customer-create-form { gap: 24px; } .customer-create-form textarea { min-height: 88px; font-size: 14px; line-height: 1.4; }
