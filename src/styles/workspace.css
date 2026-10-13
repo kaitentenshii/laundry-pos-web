@@ -173,3 +173,53 @@
 .payment-receipt { margin: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 12px; font-size: 13px; border-top: 1px solid var(--border); padding-top: 20px; overflow-wrap: anywhere; } .payment-receipt dt { color: var(--muted); } .payment-receipt dd { margin: 0; }
 .order-timeline { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 16px; } .order-timeline li { display: flex; justify-content: space-between; align-items: start; gap: 16px; } .order-timeline time { display: block; color: var(--muted); font-size: 12px; margin-top: 4px; } .history-latest { margin-left: 8px; font-size: 11px; font-weight: 400; color: var(--teal); }
 .dialog-backdrop { --border: #dfe7e1; --ink: #173c37; --muted: #6b7f79; --nav: #edf3ef; --canvas: #f5f7f5; --paper: white; }
+/* Order customer search, selection and inline creation. */
+.customer-picker { position: relative; min-width: 0; }
+.picker-label { display: block; font-size: 13px; font-weight: 500; margin-bottom: 8px; }
+.picker-search-input { display: flex; align-items: center; gap: 12px; padding: 0 16px; height: 48px; border: 1px solid var(--border); border-radius: 12px; background: var(--paper); }
+.picker-search-input:focus-within, .picker-focused { border-color: var(--teal); box-shadow: 0 0 0 1px var(--teal); }
+.picker-search-input input { border: 0; outline: none; min-width: 0; flex: 1; width: 100%; padding: 12px 0; color: var(--ink); background: transparent; font: inherit; font-size: 14px; }
+.picker-search-input input::placeholder { color: var(--muted); }
+.picker-icon-button { display: inline-flex; align-items: center; justify-content: center; flex: 0 0 auto; width: 28px; height: 28px; padding: 0; border: 0; background: transparent; cursor: pointer; }
+.picker-icon-button:disabled { opacity: .5; cursor: wait; }
+.picker-avatar .workspace-icon { width: 24px; height: 24px; }
+.picker-dropdown { position: absolute; top: calc(100% + 6px); left: 0; right: 0; z-index: 20; background: var(--paper); border: 1px solid var(--border); border-radius: 12px; box-shadow: 0 4px 12px rgb(23 60 55 / 16%); overflow: hidden; }
+.picker-dropdown ul { list-style: none; padding: 4px; margin: 0; max-height: 304px; overflow-y: auto; }
+.picker-dropdown li { display: flex; align-items: center; gap: 12px; padding: 16px; min-height: 76px; cursor: pointer; border-radius: 8px; }
+.picker-dropdown li.picker-active, .picker-dropdown li:hover { background: var(--mint); }
+.picker-avatar { width: 40px; height: 40px; border-radius: 50%; background: var(--canvas); display: grid; place-items: center; flex: 0 0 auto; }
+.picker-avatar-selected { background: var(--mint); }
+.picker-contact { display: flex; flex-direction: column; gap: 4px; flex: 1; min-width: 0; }
+.picker-contact strong { font-weight: 600; font-size: 14px; overflow-wrap: anywhere; }
+.picker-contact > span { color: var(--muted); font-size: 14px; overflow-wrap: anywhere; }
+.picker-consent { display: inline-flex; align-items: center; justify-content: center; padding: 4px 10px; font-size: 12px; border-radius: 8px; color: var(--muted); background: var(--nav); flex: 0 0 auto; }
+.picker-approved { background: var(--mint); color: var(--teal); }
+.picker-add { display: flex; align-items: center; gap: 16px; width: 100%; padding: 16px 20px; border: 0; border-top: 1px solid var(--border); background: var(--paper); color: var(--ink); text-align: left; cursor: pointer; font: inherit; }
+.picker-add:hover { background: var(--canvas); }
+.picker-add-icon { display: grid; place-items: center; width: 40px; height: 40px; border: 1px solid var(--border); border-radius: 50%; flex: 0 0 auto; }
+.picker-add > span:last-child { display: flex; flex-direction: column; gap: 4px; }
+.picker-add strong { font-size: 14px; font-weight: 500; }
+.picker-add > span:last-child > span { color: var(--muted); font-size: 12px; }
+.picker-feedback { padding: 20px; margin: 0; color: var(--muted); font-size: 14px; }
+.picker-result-count { margin: 0; padding: 8px 16px; font-size: 12px; color: var(--muted); }
+.picker-selected { border: 1px solid var(--border); border-radius: 12px; padding: 16px; }
+.picker-selected-main { display: flex; align-items: center; gap: 12px; }
+.picker-selected .picker-contact strong { font-size: 16px; }
+.picker-change { display: flex; align-items: center; gap: 8px; min-height: 44px; padding: 10px 12px; background: var(--paper); border: 1px solid var(--border); border-radius: 12px; color: var(--ink); font: inherit; font-size: 14px; cursor: pointer; }
+.picker-change:disabled { opacity: .5; cursor: wait; }
+.picker-selected-consent { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+.picker-selected-consent p { font-size: 12px; color: var(--muted); margin: 0; }
+.dialog-heading { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+.customer-create-form { margin-top: 24px; }
+.customer-phone-input { display: grid; grid-template-columns: 88px minmax(0,1fr); gap: 12px; }
+.customer-opt-in { display: flex; align-items: flex-start; gap: 12px; font-size: 13px; line-height: 1.6; }
+.customer-opt-in input { accent-color: var(--teal); width: 20px; height: 20px; flex: 0 0 auto; margin-top: 1px; }
+.customer-create-actions { justify-content: flex-end; }
+.customer-create-actions button { flex: 0 1 auto; min-width: 140px; }
+@media (max-width: 600px) { .picker-dropdown li { padding: 12px; flex-wrap: wrap; gap: 8px; } .picker-dropdown .picker-consent { margin-left: 48px; } .picker-selected-main { flex-wrap: wrap; } .picker-selected-main .picker-contact { min-width: 120px; } .picker-selected-consent { align-items: start; } .customer-create-actions button { flex: 1; min-width: 0; } }
+.order-summary .login-button:disabled { opacity: 1; background: var(--nav); color: var(--muted); cursor: not-allowed; }
+.picker-search-input > .workspace-icon:first-child img { transform: translate(.4167px, .4167px); }
+.customer-opt-in input { appearance: none; margin-top: 0; border: 1px solid var(--border); border-radius: 4px; background: var(--paper); display: grid; place-items: center; cursor: pointer; }
+.customer-opt-in input:checked { background: var(--teal); border-color: var(--teal); }
+.customer-opt-in input:checked::after { content: '✓'; color: white; font-family: 'Outfit', sans-serif; font-size: 14px; font-weight: 500; line-height: 1; }
+.customer-opt-in input:focus-visible { outline: 2px solid var(--teal); outline-offset: 3px; }
