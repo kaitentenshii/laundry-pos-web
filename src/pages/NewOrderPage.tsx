@@ -4,7 +4,7 @@ import { Link, useNavigate, useSearchParams } from 'react-router'
 import { useAuth } from '../auth/context'
 import { useCollection } from '../hooks/useCollection'
 import { ApiError } from '../services/api'
-import { money } from '../services/orders'
+import { money, quoteLine, maxOrderTotal } from '../services/orders'
 import type { Order } from '../services/orders'
 import type { Customer } from './CustomersPage'
 import type { LaundryService } from './ServicesPage'
@@ -35,10 +35,10 @@ export function NewOrderPage() {
   const customer = customers.data.find(c => c.id === Number(customerId))
   const calculations = lines.map(line => {
     const service = services.data.find(s => s.id === Number(line.serviceId))
-    const normalized = line.quantity.replace(',', '.')
-    const numeric = Number(normalized)
-    const valid = Boolean(service && /^\d+(\.\d{1,3})?$/.test(normalized) && numeric > 0 && numeric <= 1000000 && (service.unit === 'KG' || Number.isInteger(numeric)))
-    const subtotal = valid && service ? Math.floor((service.price * Math.round(numeric * 1000) + 500) / 1000) : 0
+    const quote = service ? quoteLine(service.price, line.quantity, service.unit) : null
+    const normalized = quote?.normalized ?? line.quantity.replace(',', '.')
+    const valid = Boolean(quote)
+    const subtotal = quote?.subtotal ?? 0
     return { ...line, service, normalized, valid, subtotal }
   })
   const total = calculations.reduce((sum, line) => sum + line.subtotal, 0)
@@ -47,14 +47,14 @@ export function NewOrderPage() {
     event.preventDefault(); if (busy) return
     const fields: Record<string, string> = {}
     if (!customer) fields.customer_id = 'Pilih pelanggan terdaftar.'
-    if (calculations.some(line => !line.valid)) fields.items = 'Pilih layanan dan isi berat/jumlah yang valid.'
+    if (calculations.some(line => !line.valid) || total > maxOrderTotal) fields.items = 'Pilih layanan dan isi berat/jumlah yang valid.'
     if (!dueDate || !dueTime || Number.isNaN(new Date(`${dueDate}T${dueTime}:00+07:00`).getTime())) fields.due_at = 'Isi tanggal dan jam estimasi selesai yang belum lewat.'
     setErrors(fields); setError(''); if (Object.keys(fields).length) return
     setBusy(true)
     try {
-      const response = await authorizedRequest('/orders', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ customer_id: Number(customerId), due_at: `${dueDate}T${dueTime}:00+07:00`, notes, items: calculations.map(line => ({ service_id: Number(line.serviceId), quantity: line.normalized })), request_key: requestKey }) })
+      const response = await authorizedRequest('/orders', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ customer_id: Number(customerId), due_at: `${dueDate}T${dueTime}:00+07:00`, notes, expected_total: total, items: calculations.map(line => ({ service_id: Number(line.serviceId), quantity: line.normalized })), request_key: requestKey }) })
       const body = await response.json() as { data: Order }; setCreated(body.data)
-    } catch (failure) { setError(failure instanceof Error ? failure.message : 'Pesanan belum dapat disimpan.'); if (failure instanceof ApiError) setErrors(failure.fields) } finally { setBusy(false) }
+    } catch (failure) { setError(failure instanceof Error ? failure.message : 'Pesanan belum dapat disimpan.'); if (failure instanceof ApiError) { setErrors(failure.fields); if (failure.fields.expected_total) services.reload() } } finally { setBusy(false) }
   }
   if (created) return <section className="feedback-panel"><h1>Pesanan berhasil disimpan</h1><p>{created.order_number} · {created.customer_name}</p><p>{money(created.total)} · Diterima · Belum lunas</p><Button onClick={() => navigate('/orders')}>Kembali ke pesanan</Button></section>
   return <>
