@@ -18,6 +18,7 @@ export default function App() {
           <Route index element={<HomePage />} />
           <Route path="customers" element={<CustomersPage />} />
           <Route path="orders" element={<PlannedFeaturePage title="Pesanan" description="Belum ada pesanan yang dapat ditampilkan." />} />
+          <Route path="orders/new" element={<PlannedFeaturePage title="Buat pesanan" description="Pembuatan pesanan tersedia pada Sprint 2." />} />
           <Route path="notifications" element={<PlannedFeaturePage title="Notifikasi WhatsApp" description="Belum ada notifikasi yang dapat ditampilkan." />} />
           <Route element={<RequireRole roles={['admin']} />}>
             <Route path="users" element={<UsersPage />} />
