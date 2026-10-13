@@ -81,3 +81,10 @@
 .field-hint { color: #6b7f79; font-size: 13px; margin: 0; }
 .workspace-form textarea { width: 100%; min-height: 80px; resize: vertical; border: 1px solid #dfe7e1; border-radius: 12px; padding: 14px 16px; font: inherit; color: #173c37; background: white; }
 .workspace-form textarea:focus { outline: 2px solid #146b58; outline-offset: 2px; }
+.customer-filters { display: grid; grid-template-columns: 2fr 1fr; align-items: end; gap: 16px; margin-bottom: 24px; }
+.customer-search { display: flex; gap: 12px; }
+.customer-search input { min-width: 0; flex: 1; height: 48px; border: 1px solid #dfe7e1; border-radius: 12px; padding: 16px; background: white; color: #173c37; font: inherit; }
+.customer-search input:focus { outline: 2px solid #146b58; outline-offset: 2px; }
+.collection-pagination { display: flex; align-items: center; justify-content: flex-end; gap: 12px; margin-top: 20px; flex-wrap: wrap; }
+.collection-pagination p { margin-right: auto; color: #6b7f79; font-size: 13px; }
+@media (max-width: 700px) { .customer-filters { grid-template-columns: 1fr; } }

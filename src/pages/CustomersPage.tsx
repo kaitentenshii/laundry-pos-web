@@ -54,13 +54,21 @@ function CustomerEditor({ customer, onClose, onSaved }: { customer: Customer | n
 }
 
 export function CustomersPage() {
-  const { data, loading, error, reload } = useCollection<Customer>('/customers')
+  const [search, setSearch] = useState('')
+  const [query, setQuery] = useState('')
+  const [consentFilter, setConsentFilter] = useState('')
+  const [page, setPage] = useState(1)
+  const params = new URLSearchParams({ q: query, page: String(page), page_size: '20' })
+  if (consentFilter) params.set('consent', consentFilter)
+  const { data, total, loading, error, reload } = useCollection<Customer>(`/customers?${params}`)
   const [editing, setEditing] = useState<Customer | null | undefined>(undefined)
   const [notice, setNotice] = useState('')
   return <>
     <header className="page-heading page-heading-actions"><div><h1>Pelanggan</h1><p>Kontak yang rapi untuk pesanan dan notifikasi.</p></div><Button onClick={() => setEditing(null)}>+ Pelanggan baru</Button></header>
     {notice && <p className="workspace-notice" role="status">{notice}</p>}
-    {loading ? <p role="status" className="collection-loading">Memuat pelanggan…</p> : error ? <section role="alert" className="feedback-panel feedback-error"><p>{error}</p><Button onClick={reload}>Coba lagi</Button></section> : !data.length ? <section className="feedback-panel"><h2>Belum ada pelanggan</h2><p>Tambahkan pelanggan untuk mencatat kontaknya.</p></section> : <div className="table-wrap"><table className="workspace-table"><thead><tr><th>NAMA</th><th>WHATSAPP</th><th>PERSETUJUAN WA</th><th>AKSI</th></tr></thead><tbody>{data.map(customer => <tr key={customer.id}><td className="cell-medium">{customer.name}</td><td>{customer.whatsapp}</td><td><span className={customer.whatsapp_opt_in ? 'text-active' : 'text-muted'}>{customer.whatsapp_opt_in ? 'Disetujui' : 'Belum disetujui'}</span></td><td><button className="table-action" aria-label={`Edit pelanggan ${customer.name}`} onClick={() => setEditing(customer)}>Edit</button></td></tr>)}</tbody></table></div>}
+    <div className="customer-filters"><form onSubmit={event => { event.preventDefault(); setQuery(search.trim()); setPage(1) }} className="customer-search"><label htmlFor="customer-search" className="sr-only">Cari pelanggan</label><input id="customer-search" type="search" maxLength={120} placeholder="Cari nama atau nomor WhatsApp" value={search} onChange={event => setSearch(event.target.value)} /><Button type="submit" className="button-secondary">Cari</Button></form><SelectField id="customer-consent" label="Persetujuan notifikasi" value={consentFilter} onChange={event => { setConsentFilter(event.target.value); setPage(1) }}><option value="">Semua persetujuan</option><option value="true">Disetujui</option><option value="false">Belum disetujui</option></SelectField></div>
+    {loading ? <p role="status" className="collection-loading">Memuat pelanggan…</p> : error ? <section role="alert" className="feedback-panel feedback-error"><p>{error}</p><Button onClick={reload}>Coba lagi</Button></section> : !data.length ? <section className="feedback-panel"><h2>{query || consentFilter ? 'Tidak ada pelanggan yang sesuai' : 'Belum ada pelanggan'}</h2><p>{query || consentFilter ? 'Ubah pencarian atau filter persetujuan.' : 'Tambahkan pelanggan untuk mencatat kontaknya.'}</p></section> : <div className="table-wrap"><table className="workspace-table"><thead><tr><th>NAMA</th><th>WHATSAPP</th><th>PERSETUJUAN WA</th><th>AKSI</th></tr></thead><tbody>{data.map(customer => <tr key={customer.id}><td className="cell-medium">{customer.name}</td><td>{customer.whatsapp}</td><td><span className={customer.whatsapp_opt_in ? 'text-active' : 'text-muted'}>{customer.whatsapp_opt_in ? 'Disetujui' : 'Belum disetujui'}</span></td><td><button className="table-action" aria-label={`Edit pelanggan ${customer.name}`} onClick={() => setEditing(customer)}>Edit</button></td></tr>)}</tbody></table></div>}
     {editing !== undefined && <CustomerEditor customer={editing} onClose={() => setEditing(undefined)} onSaved={() => { setNotice(editing ? 'Data pelanggan berhasil diperbarui.' : 'Pelanggan berhasil ditambahkan.'); setEditing(undefined); reload() }} />}
+    {!loading && !error && <nav className="collection-pagination" aria-label="Halaman pelanggan"><p>{total} pelanggan · Halaman {page} dari {Math.max(1, Math.ceil(total / 20))}</p><Button className="button-secondary" disabled={page === 1} onClick={() => setPage(value => value - 1)}>Sebelumnya</Button><Button className="button-secondary" disabled={page * 20 >= total} onClick={() => setPage(value => value + 1)}>Berikutnya</Button></nav>}
   </>
 }
