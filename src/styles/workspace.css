@@ -140,3 +140,4 @@
 @media (max-width: 1000px) { .order-grid { grid-template-columns: minmax(0, 1fr); } }
 @media (max-width: 600px) { .order-item-fields { grid-template-columns: minmax(0, 1fr); } .order-total { font-size: 32px; } }
 .order-line { display: flex; flex-direction: column; gap: 20px; }
+.order-number { font-size: 24px; color: var(--teal); letter-spacing: 0.03em; }
