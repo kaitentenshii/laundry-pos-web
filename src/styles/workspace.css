@@ -170,3 +170,4 @@
 .payment-confirm { display: flex; align-items: center; gap: 12px; font-size: 14px; }
 .payment-confirm input { accent-color: var(--teal); width: 18px; height: 18px; }
 @media (max-width: 1000px) { .payment-grid { grid-template-columns: minmax(0,1fr); } }
+.payment-receipt { margin: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 12px; font-size: 13px; border-top: 1px solid var(--border); padding-top: 20px; overflow-wrap: anywhere; } .payment-receipt dt { color: var(--muted); } .payment-receipt dd { margin: 0; }
