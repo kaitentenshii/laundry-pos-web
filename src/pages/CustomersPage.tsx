@@ -10,14 +10,14 @@ import { Modal } from '../components/ui/Modal'
 
 export type Customer = { id: number; name: string; whatsapp: string; address: string; notes: string; whatsapp_opt_in: boolean; created_at: string; updated_at: string }
 
-function CustomerEditor({ onClose, onSaved }: { onClose: () => void; onSaved: () => void }) {
+function CustomerEditor({ customer, onClose, onSaved }: { customer: Customer | null; onClose: () => void; onSaved: () => void }) {
   const { authorizedRequest } = useAuth()
   const id = useId()
-  const [name, setName] = useState('')
-  const [phone, setPhone] = useState('')
-  const [address, setAddress] = useState('')
-  const [notes, setNotes] = useState('')
-  const [consent, setConsent] = useState(false)
+  const [name, setName] = useState(customer?.name ?? '')
+  const [phone, setPhone] = useState(customer?.whatsapp ?? '')
+  const [address, setAddress] = useState(customer?.address ?? '')
+  const [notes, setNotes] = useState(customer?.notes ?? '')
+  const [consent, setConsent] = useState(customer?.whatsapp_opt_in ?? false)
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState('')
   const [errors, setErrors] = useState<Record<string, string>>({})
@@ -31,14 +31,14 @@ function CustomerEditor({ onClose, onSaved }: { onClose: () => void; onSaved: ()
     if (Object.keys(fields).length) { document.getElementById(`${id}-${Object.keys(fields)[0]}`)?.focus(); return }
     setBusy(true)
     try {
-      await authorizedRequest('/customers', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name, whatsapp: phone, address, notes, whatsapp_opt_in: consent }) })
+      await authorizedRequest(customer ? '/customers/' + customer.id : '/customers', { method: customer ? 'PUT' : 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name, whatsapp: phone, address, notes, whatsapp_opt_in: consent }) })
       onSaved()
     } catch (failure) {
       setError(failure instanceof Error ? failure.message : 'Pelanggan belum dapat disimpan.')
       if (failure instanceof ApiError) setErrors(failure.fields)
     } finally { setBusy(false) }
   }
-  return <Modal title="Tambah pelanggan" description="Data kontak digunakan untuk transaksi dan notifikasi status." onClose={onClose} busy={busy}>
+  return <Modal title={customer ? 'Edit data pelanggan' : 'Tambah pelanggan'} description="Data kontak digunakan untuk transaksi dan notifikasi status." onClose={onClose} busy={busy}>
     <form onSubmit={submit} noValidate className="workspace-form">
       <TextField id={`${id}-name`} label="Nama pelanggan *" value={name} onChange={e => setName(e.target.value)} error={errors.name} disabled={busy} required maxLength={120} placeholder="Nama lengkap" />
       <TextField id={`${id}-whatsapp`} label="Nomor WhatsApp *" type="tel" value={phone} onChange={e => setPhone(e.target.value)} error={errors.whatsapp} disabled={busy} required maxLength={40} placeholder="+62 8xx-xxxx-xxxx" />
@@ -55,12 +55,12 @@ function CustomerEditor({ onClose, onSaved }: { onClose: () => void; onSaved: ()
 
 export function CustomersPage() {
   const { data, loading, error, reload } = useCollection<Customer>('/customers')
-  const [creating, setCreating] = useState(false)
+  const [editing, setEditing] = useState<Customer | null | undefined>(undefined)
   const [notice, setNotice] = useState('')
   return <>
-    <header className="page-heading page-heading-actions"><div><h1>Pelanggan</h1><p>Kontak yang rapi untuk pesanan dan notifikasi.</p></div><Button onClick={() => setCreating(true)}>+ Pelanggan baru</Button></header>
+    <header className="page-heading page-heading-actions"><div><h1>Pelanggan</h1><p>Kontak yang rapi untuk pesanan dan notifikasi.</p></div><Button onClick={() => setEditing(null)}>+ Pelanggan baru</Button></header>
     {notice && <p className="workspace-notice" role="status">{notice}</p>}
-    {loading ? <p role="status" className="collection-loading">Memuat pelanggan…</p> : error ? <section role="alert" className="feedback-panel feedback-error"><p>{error}</p><Button onClick={reload}>Coba lagi</Button></section> : !data.length ? <section className="feedback-panel"><h2>Belum ada pelanggan</h2><p>Tambahkan pelanggan untuk mencatat kontaknya.</p></section> : <div className="table-wrap"><table className="workspace-table"><thead><tr><th>NAMA</th><th>WHATSAPP</th><th>PERSETUJUAN WA</th></tr></thead><tbody>{data.map(customer => <tr key={customer.id}><td className="cell-medium">{customer.name}</td><td>{customer.whatsapp}</td><td><span className={customer.whatsapp_opt_in ? 'text-active' : 'text-muted'}>{customer.whatsapp_opt_in ? 'Disetujui' : 'Belum disetujui'}</span></td></tr>)}</tbody></table></div>}
-    {creating && <CustomerEditor onClose={() => setCreating(false)} onSaved={() => { setCreating(false); setNotice('Pelanggan berhasil ditambahkan.'); reload() }} />}
+    {loading ? <p role="status" className="collection-loading">Memuat pelanggan…</p> : error ? <section role="alert" className="feedback-panel feedback-error"><p>{error}</p><Button onClick={reload}>Coba lagi</Button></section> : !data.length ? <section className="feedback-panel"><h2>Belum ada pelanggan</h2><p>Tambahkan pelanggan untuk mencatat kontaknya.</p></section> : <div className="table-wrap"><table className="workspace-table"><thead><tr><th>NAMA</th><th>WHATSAPP</th><th>PERSETUJUAN WA</th><th>AKSI</th></tr></thead><tbody>{data.map(customer => <tr key={customer.id}><td className="cell-medium">{customer.name}</td><td>{customer.whatsapp}</td><td><span className={customer.whatsapp_opt_in ? 'text-active' : 'text-muted'}>{customer.whatsapp_opt_in ? 'Disetujui' : 'Belum disetujui'}</span></td><td><button className="table-action" aria-label={`Edit pelanggan ${customer.name}`} onClick={() => setEditing(customer)}>Edit</button></td></tr>)}</tbody></table></div>}
+    {editing !== undefined && <CustomerEditor customer={editing} onClose={() => setEditing(undefined)} onSaved={() => { setNotice(editing ? 'Data pelanggan berhasil diperbarui.' : 'Pelanggan berhasil ditambahkan.'); setEditing(undefined); reload() }} />}
   </>
 }
