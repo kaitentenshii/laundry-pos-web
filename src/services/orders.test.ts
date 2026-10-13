@@ -1,5 +1,5 @@
 import { expect, it } from 'vitest'
-import { quoteLine } from './orders'
+import { quoteLine, canTransition } from './orders'
 it('rounds each subtotal half-up using integer arithmetic', () => {
   expect(quoteLine(999, '0,5', 'KG')?.subtotal).toBe(500)
   expect(quoteLine(8000, '4.125', 'KG')?.subtotal).toBe(33000)
@@ -12,4 +12,11 @@ it('rejects invalid units, precision, and excessive subtotal', () => {
   expect(quoteLine(1000, '1.0001', 'KG')).toBeNull()
   expect(quoteLine(999999999, '10000', 'ITEM')).toBeNull()
   expect(quoteLine(1000, '0', 'KG')).toBeNull()
+})
+it('requires ordered transitions, payment for pickup, and server permission', () => {
+  expect(canTransition({ status: 'RECEIVED', payment_status: 'UNPAID' }, 'COMPLETED')).toBe(false)
+  expect(canTransition({ status: 'COMPLETED', payment_status: 'UNPAID' }, 'PICKED_UP')).toBe(false)
+  expect(canTransition({ status: 'COMPLETED', payment_status: 'PAID' }, 'PICKED_UP')).toBe(true)
+  expect(canTransition({ status: 'RECEIVED', payment_status: 'PAID', allowed_next_statuses: [] }, 'WASHING')).toBe(false)
+  expect(canTransition({ status: 'PICKED_UP', payment_status: 'PAID' }, 'PICKED_UP')).toBe(false)
 })
