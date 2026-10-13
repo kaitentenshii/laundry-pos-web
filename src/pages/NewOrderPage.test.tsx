@@ -22,7 +22,7 @@ beforeEach(() => {
 afterEach(() => { cleanup(); vi.unstubAllGlobals() })
 async function open() {
   render(<MemoryRouter initialEntries={['/orders/new?customer_id=1']}><AuthProvider><App /></AuthProvider></MemoryRouter>)
-  await screen.findByDisplayValue('+6281234567890')
+  await screen.findByLabelText('Pelanggan terpilih')
 }
 function fill() {
   fireEvent.change(screen.getByLabelText('Layanan *'), { target: { value: '1' } })
@@ -60,8 +60,8 @@ it('adds and removes service lines and submits both unit types', async () => {
 })
 it('loads a preselected customer outside the first customer page', async () => {
   render(<MemoryRouter initialEntries={['/orders/new?customer_id=1000']}><AuthProvider><App /></AuthProvider></MemoryRouter>)
-  await screen.findByRole('option', { name: 'Pelanggan lama · +6281234567890' })
-  expect((screen.getByLabelText('Nama pelanggan *') as HTMLSelectElement).value).toBe('1000')
+  await screen.findByLabelText('Pelanggan terpilih')
+  expect(screen.getByLabelText('Pelanggan terpilih').textContent).toContain('+6281234567890')
   fill(); fireEvent.click(screen.getByRole('button', { name: 'Simpan pesanan' }))
   await screen.findByRole('heading', { name: 'Pesanan berhasil disimpan' }); expect(posts[0].customer_id).toBe(1000)
 })

@@ -2,12 +2,13 @@ import { useEffect, useId, useRef } from 'react'
 import { createPortal } from 'react-dom'
 import type { ReactNode } from 'react'
 
-export function Modal({ title, description, children, onClose, busy = false }: { title: string; description: string; children: ReactNode; onClose: () => void; busy?: boolean }) {
+export function Modal({ title, description = '', children, onClose, busy = false, headerAction }: { title: string; description?: string; children: ReactNode; onClose: () => void; busy?: boolean; headerAction?: ReactNode }) {
   const titleId = useId()
   const dialog = useRef<HTMLDivElement>(null)
   useEffect(() => {
     const previous = document.activeElement as HTMLElement | null
-    dialog.current?.querySelector<HTMLElement>('input, select, button')?.focus()
+    const target = dialog.current?.querySelector<HTMLElement>('[data-autofocus]') ?? dialog.current?.querySelector<HTMLElement>('input, select, button')
+    target?.focus()
     return () => previous?.focus()
   }, [])
   return createPortal(
@@ -22,7 +23,7 @@ export function Modal({ title, description, children, onClose, busy = false }: {
           else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus() }
         }
       }}>
-        <h2 id={titleId}>{title}</h2><p className="dialog-description">{description}</p>{children}
+        <div className="dialog-heading"><h2 id={titleId}>{title}</h2>{headerAction}</div>{description && <p className="dialog-description">{description}</p>}{children}
       </div>
     </div>, document.body,
   )
