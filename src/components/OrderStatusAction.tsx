@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useAuth } from '../auth/context'
-import { statusLabels } from '../services/orders'
+import { statusLabels, canTransition } from '../services/orders'
 import type { Order } from '../services/orders'
 import { Button } from './ui/Button'
 import { Modal } from './ui/Modal'
@@ -12,7 +12,7 @@ export function OrderStatusAction({ order, onChanged }: { order: Order; onChange
   const [error, setError] = useState('')
   const [key, setKey] = useState(() => crypto.randomUUID())
   const next = order.status === 'RECEIVED' ? 'WASHING' : order.status === 'WASHING' ? 'COMPLETED' : null
-  if (!next) return null
+  if (!next || !canTransition(order, next)) return null
   const washing = next === 'WASHING'
   const labels = Object.keys(statusLabels)
   async function confirm() {
