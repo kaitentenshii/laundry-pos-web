@@ -88,3 +88,26 @@
 .collection-pagination { display: flex; align-items: center; justify-content: flex-end; gap: 12px; margin-top: 20px; flex-wrap: wrap; }
 .collection-pagination p { margin-right: auto; color: #6b7f79; font-size: 13px; }
 @media (max-width: 700px) { .customer-filters { grid-template-columns: 1fr; } }
+.customer-content { display: grid; grid-template-columns: minmax(0, 736fr) minmax(280px, 360fr); gap: 24px; align-items: start; }
+.customer-content > div { min-width: 0; }
+.customer-detail { background: white; border: 1px solid #dfe7e1; border-radius: 16px; padding: 24px; display: flex; flex-direction: column; gap: 20px; overflow-wrap: anywhere; }
+.customer-detail h2 { font-size: 18px; font-weight: 500; margin: 0; }
+.customer-detail h3 { font-size: 24px; font-weight: 600; margin: 0; }
+.customer-detail p { margin: 0; }
+.customer-avatar { width: 64px; height: 64px; display: grid; place-items: center; background: #e2f2e9; color: #146b58; border-radius: 20px; font-size: 24px; font-weight: 600; }
+.consent-badge { align-self: start; background: #e2f2e9; color: #146b58; border-radius: 8px; padding: 4px 10px; font-size: 12px; }
+.consent-pending { background: #fff2df; color: #98611f; }
+.customer-detail dl { border-top: 1px solid #dfe7e1; padding-top: 20px; margin: 0; }
+.customer-detail dt { font-size: 12px; color: #6b7f79; margin-bottom: 8px; }
+.customer-detail dd { margin: 0 0 16px; white-space: pre-wrap; }
+.customer-order-link { display: flex; align-items: center; justify-content: center; min-height: 44px; border-radius: 12px; background: #146b58; color: white; font-weight: 500; text-decoration: none; }
+.customer-name { text-align: left; }
+@media (max-width: 1000px) { .customer-content { grid-template-columns: 1fr; } }
+@media (max-width: 1000px) { .customer-content { grid-template-columns: minmax(0, 1fr); } .customer-detail { min-width: 0; } }
+@media (max-width: 700px) { .customer-filters { grid-template-columns: minmax(0, 1fr); } .customer-search { min-width: 0; } .customer-search .login-button { width: auto; min-width: 76px; } }
+.customer-content .workspace-table { min-width: 680px; }
+.customer-content .workspace-table th:nth-child(1) { width: 27%; }
+.customer-content .workspace-table th:nth-child(2) { width: 26%; }
+.customer-content .workspace-table th:nth-child(3) { width: 12%; }
+.customer-content .workspace-table th:nth-child(4) { width: 24%; }
+.customer-content .workspace-table th:nth-child(5) { width: 11%; }
