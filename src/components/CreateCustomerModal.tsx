@@ -30,6 +30,7 @@ export function CreateCustomerModal({ query, onClose, onSaved }: { query: string
   const [errors, setErrors] = useState<Record<string, string>>({})
   async function submit(event: FormEvent) {
     event.preventDefault()
+    event.stopPropagation()
     if (busy) return
     const fields: Record<string, string> = {}
     if (!name.trim() || Array.from(name.trim()).length > 120) fields.name = 'Nama wajib diisi, maksimal 120 karakter.'

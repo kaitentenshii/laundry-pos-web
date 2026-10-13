@@ -11,8 +11,9 @@ const second = { ...first, id: 2, name: 'Nadia Rahma', whatsapp: '+6281212345678
 const json = (body: unknown, status = 200) => new Response(JSON.stringify(body), { status })
 const fetchMock = vi.fn()
 let posts: Record<string, unknown>[]
+let orderSubmits: number
 beforeEach(() => {
-  posts = []; fetchMock.mockReset()
+  posts = []; orderSubmits = 0; fetchMock.mockReset()
   fetchMock.mockImplementation(async (url: string, options: RequestInit = {}) => {
     if (options.method === 'POST') { const body = JSON.parse(options.body as string); posts.push(body); return json({ data: { ...first, ...body, id: 3 } }, 201) }
     const q = new URL(url).searchParams.get('q')
@@ -23,7 +24,7 @@ beforeEach(() => {
 afterEach(() => { cleanup(); vi.unstubAllGlobals() })
 function Harness() {
   const [selected, setSelected] = useState<Customer | null>(null)
-  return <AuthContext.Provider value={{ session: null, checking: false, notice: '', login: async () => {}, logout: async () => {}, refreshUser: async () => {}, authorizedRequest: (path, options) => apiRequest(path, options, 'test-token') }}><CustomerPicker selected={selected} onSelect={setSelected} onClear={() => setSelected(null)} /></AuthContext.Provider>
+  return <AuthContext.Provider value={{ session: null, checking: false, notice: '', login: async () => {}, logout: async () => {}, refreshUser: async () => {}, authorizedRequest: (path, options) => apiRequest(path, options, 'test-token') }}><form onSubmit={event => { event.preventDefault(); orderSubmits++ }}><CustomerPicker selected={selected} onSelect={setSelected} onClear={() => setSelected(null)} /></form></AuthContext.Provider>
 }
 function open() { render(<Harness />); const input = screen.getByRole('combobox'); fireEvent.focus(input); return input }
 it('searches directly and selects with the keyboard, then supports changing the customer', async () => {
@@ -62,6 +63,7 @@ it('creates and selects a customer inline with default-off consent and normalize
   fireEvent.click(within(dialog).getByRole('button', { name: 'Simpan & pilih' }))
   await screen.findByLabelText('Pelanggan terpilih')
   expect(posts[0]).toMatchObject({ name: 'Rina Baru', whatsapp: '+6281234567890', whatsapp_opt_in: false })
+  expect(orderSubmits).toBe(0)
   expect(screen.getByLabelText('Pelanggan terpilih').textContent).toContain('Rina Baru')
 })
 it('keeps validation failures in the modal and prevents duplicate submissions while saving', async () => {
