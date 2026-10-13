@@ -22,7 +22,9 @@ it('lists persisted order data, paginates, and opens order detail', async () => 
   open(); const link = await screen.findByRole('link', { name: 'LD-1' }); expect(link.getAttribute('href')).toBe('/orders/1')
   expect(screen.getByRole('table').textContent).toContain('Cuci · 4 kg')
   fireEvent.click(screen.getByRole('button', { name: 'Berikutnya' })); await screen.findByText('21 pesanan · Halaman 2 dari 2')
-  fireEvent.click(screen.getByRole('link', { name: 'LD-1' })); await screen.findByRole('heading', { name: 'LD-1' })
+  fireEvent.click(screen.getByRole('link', { name: 'LD-1' })); await screen.findByRole('heading', { name: 'Pesanan LD-1' })
+  expect(screen.getByText('Catatan: Tanpa pewangi')).toBeTruthy()
+  expect(screen.getByLabelText('Tahap pencucian').textContent).toContain('Diambil')
 })
 it('combines date/payment/status filters and resets pagination', async () => {
   open(); await screen.findByRole('table')
