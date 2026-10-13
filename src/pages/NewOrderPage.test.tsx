@@ -13,6 +13,7 @@ beforeEach(() => {
   vi.stubGlobal('fetch', vi.fn(async (url: string, options: RequestInit = {}) => {
     if (url.endsWith('/auth/me')) return new Response(JSON.stringify({ user }))
     if (url.includes('/customers?')) return new Response(JSON.stringify({ data: [{ id: 1, name: 'Nadia', whatsapp: '+6281234567890', whatsapp_opt_in: true }] }))
+    if (/\/customers\/\d+$/.test(url)) { const id = Number(url.split('/').at(-1)); return new Response(JSON.stringify({ data: { id, name: id === 1000 ? 'Pelanggan lama' : 'Nadia', whatsapp: '+6281234567890', whatsapp_opt_in: true } })) }
     if (url.includes('/services?')) return new Response(JSON.stringify({ data: [{ id: 1, name: 'Cuci', unit: 'KG', price: 8000, is_active: true }, { id: 2, name: 'Selimut', unit: 'ITEM', price: 25000, is_active: true }] }))
     if (options.method === 'POST') { posts.push(JSON.parse(options.body as string)); if (fail) return new Response(JSON.stringify({ error: { code: 'validation_error', message: 'Layanan sudah nonaktif.', fields: { items: 'Muat ulang layanan.' } } }), { status: 400 }); return new Response(JSON.stringify({ data: { id: 1, order_number: 'LD-1', customer_name: 'Nadia', total: 32000 } }), { status: 201 }) }
     throw new Error('unexpected request ' + url)
@@ -56,4 +57,11 @@ it('adds and removes service lines and submits both unit types', async () => {
   fireEvent.change(screen.getByLabelText('Layanan 2 *'), { target: { value: '2' } })
   fireEvent.click(screen.getByRole('button', { name: 'Simpan pesanan' })); await screen.findByRole('heading', { name: 'Pesanan berhasil disimpan' })
   expect(posts[0].items).toEqual([{ service_id: 1, quantity: '4' }, { service_id: 2, quantity: '1' }])
+})
+it('loads a preselected customer outside the first customer page', async () => {
+  render(<MemoryRouter initialEntries={['/orders/new?customer_id=1000']}><AuthProvider><App /></AuthProvider></MemoryRouter>)
+  await screen.findByRole('option', { name: 'Pelanggan lama · +6281234567890' })
+  expect((screen.getByLabelText('Nama pelanggan *') as HTMLSelectElement).value).toBe('1000')
+  fill(); fireEvent.click(screen.getByRole('button', { name: 'Simpan pesanan' }))
+  await screen.findByRole('heading', { name: 'Pesanan berhasil disimpan' }); expect(posts[0].customer_id).toBe(1000)
 })
