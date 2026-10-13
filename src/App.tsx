@@ -9,6 +9,7 @@ import { RequireRole } from './auth/RequireRole'
 import { UsersPage } from './pages/UsersPage'
 import { CustomersPage } from './pages/CustomersPage'
 import { ServicesPage } from './pages/ServicesPage'
+import { NewOrderPage } from './pages/NewOrderPage'
 
 export default function App() {
   return (
@@ -19,7 +20,7 @@ export default function App() {
           <Route index element={<HomePage />} />
           <Route path="customers" element={<CustomersPage />} />
           <Route path="orders" element={<PlannedFeaturePage title="Pesanan" description="Belum ada pesanan yang dapat ditampilkan." />} />
-          <Route path="orders/new" element={<PlannedFeaturePage title="Buat pesanan" description="Pembuatan pesanan tersedia pada Sprint 2." />} />
+          <Route path="orders/new" element={<NewOrderPage />} />
           <Route path="notifications" element={<PlannedFeaturePage title="Notifikasi WhatsApp" description="Belum ada notifikasi yang dapat ditampilkan." />} />
           <Route element={<RequireRole roles={['admin']} />}>
             <Route path="users" element={<UsersPage />} />
