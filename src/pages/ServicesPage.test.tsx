@@ -12,7 +12,7 @@ beforeEach(() => {
   vi.stubGlobal('fetch', vi.fn(async (url: string, options: RequestInit = {}) => {
     if (url.endsWith('/auth/me')) return new Response(JSON.stringify({ user }))
     if (url.endsWith('/prices')) return new Response(JSON.stringify({ data: [{ id: 1, name: 'Cuci', unit: 'KG', price: 8000, estimated_hours: 48, created_at: '2026-10-13T00:00:00Z' }] }))
-    if (options.method) { const body = JSON.parse(options.body as string); if (options.method === 'POST') records.push({ id: 1, ...body }); else records[0] = { id: 1, ...body }; return new Response(JSON.stringify({ data: records[0] })) }
+    if (options.method) { const body = JSON.parse(options.body as string); if (options.method === 'POST') records.push({ id: 1, ...body }); else records[0] = { ...records[0], id: 1, ...body }; return new Response(JSON.stringify({ data: records[0] })) }
     return new Response(JSON.stringify({ data: records }))
   }))
 })
@@ -42,4 +42,14 @@ it('shows preserved pricing versions from the API', async () => {
   await screen.findByText(/8\.000.*kg/)
   expect(screen.getByRole('dialog').textContent).toContain('Versi sebelumnya tetap tersimpan')
   fireEvent.click(screen.getByRole('button', { name: 'Tutup' })); expect(screen.queryByRole('dialog')).toBeNull()
+})
+it('confirms deactivation and can reactivate the same service', async () => {
+  records = [{ id: 1, name: 'Cuci', unit: 'KG', price: 8000, estimated_hours: 48, is_active: true }]
+  open(); fireEvent.click(await screen.findByRole('button', { name: 'Nonaktifkan layanan Cuci' }))
+  expect(records[0].is_active).toBe(true)
+  fireEvent.click(screen.getByRole('button', { name: 'Nonaktifkan' }))
+  await screen.findByText('Layanan berhasil dinonaktifkan.')
+  fireEvent.click(await screen.findByRole('button', { name: 'Aktifkan layanan Cuci' }))
+  fireEvent.click(screen.getByRole('button', { name: 'Aktifkan' }))
+  await screen.findByText('Layanan berhasil diaktifkan.'); expect(records[0]).toMatchObject({ id: 1, is_active: true, price: 8000 })
 })
