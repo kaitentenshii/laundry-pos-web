@@ -8,6 +8,7 @@ import { RequireAuth } from './auth/RequireAuth'
 import { RequireRole } from './auth/RequireRole'
 import { UsersPage } from './pages/UsersPage'
 import { CustomersPage } from './pages/CustomersPage'
+import { ServicesPage } from './pages/ServicesPage'
 
 export default function App() {
   return (
@@ -22,7 +23,7 @@ export default function App() {
           <Route path="notifications" element={<PlannedFeaturePage title="Notifikasi WhatsApp" description="Belum ada notifikasi yang dapat ditampilkan." />} />
           <Route element={<RequireRole roles={['admin']} />}>
             <Route path="users" element={<UsersPage />} />
-            <Route path="services" element={<PlannedFeaturePage title="Laundry services" description="Service management and pricing will be available here in a future update." />} />
+            <Route path="services" element={<ServicesPage />} />
             <Route path="settings" element={<PlannedFeaturePage title="Pengaturan" description="Pengaturan laundry." />} />
             <Route path="reports" element={<PlannedFeaturePage title="Laporan" description="Belum ada laporan yang dapat ditampilkan." />} />
           </Route>
