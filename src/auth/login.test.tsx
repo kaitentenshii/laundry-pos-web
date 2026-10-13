@@ -98,16 +98,16 @@ it('rejects a revoked restored token and clears storage', async () => {
 })
 
 it('revokes the token on logout and redirects to login', async () => {
-  fetchMock.mockResolvedValueOnce(json(success)).mockResolvedValueOnce(new Response(null, { status: 204 }))
+  fetchMock.mockImplementation(async (url: string) => url.endsWith('/auth/login') ? json(success) : url.endsWith('/laundry/identity') ? json({ data: { name: 'Laundry Mitra' } }) : new Response(null, { status: 204 }))
   openApp('/login')
   fillCredentials()
   fireEvent.click(screen.getByRole('button', { name: 'Masuk ke ruang kerja' }))
   await screen.findByRole('heading', { name: 'Welcome to Laundry POS' })
   fireEvent.click(screen.getByRole('button', { name: 'Keluar' }))
   await screen.findByRole('heading', { name: 'Selamat datang kembali' })
-  await waitFor(() => expect(fetchMock).toHaveBeenCalledTimes(2))
-  expect(fetchMock.mock.calls[1][0]).toContain('/auth/logout')
-  expect(new Headers(fetchMock.mock.calls[1][1].headers).get('Authorization')).toBe('Bearer test-token')
+  await waitFor(() => expect(fetchMock.mock.calls.some(call => call[0].endsWith('/auth/logout'))).toBe(true))
+  const logoutCall = fetchMock.mock.calls.find(call => call[0].endsWith('/auth/logout'))!
+  expect(new Headers(logoutCall[1].headers).get('Authorization')).toBe('Bearer test-token')
   expect(sessionStorage.getItem(SESSION_KEY)).toBeNull()
 })
 
