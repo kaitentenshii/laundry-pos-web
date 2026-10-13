@@ -6,6 +6,7 @@ import { NotFoundPage } from './pages/NotFoundPage'
 import { LoginPage } from './pages/LoginPage'
 import { RequireAuth } from './auth/RequireAuth'
 import { RequireRole } from './auth/RequireRole'
+import { UsersPage } from './pages/UsersPage'
 
 export default function App() {
   return (
@@ -18,7 +19,7 @@ export default function App() {
           <Route path="orders" element={<PlannedFeaturePage title="Pesanan" description="Belum ada pesanan yang dapat ditampilkan." />} />
           <Route path="notifications" element={<PlannedFeaturePage title="Notifikasi WhatsApp" description="Belum ada notifikasi yang dapat ditampilkan." />} />
           <Route element={<RequireRole roles={['admin']} />}>
-            <Route path="users" element={<PlannedFeaturePage title="Pengguna & akses" description="Kelola akun internal admin dan kasir." />} />
+            <Route path="users" element={<UsersPage />} />
             <Route path="services" element={<PlannedFeaturePage title="Laundry services" description="Service management and pricing will be available here in a future update." />} />
             <Route path="settings" element={<PlannedFeaturePage title="Pengaturan" description="Pengaturan laundry." />} />
             <Route path="reports" element={<PlannedFeaturePage title="Laporan" description="Belum ada laporan yang dapat ditampilkan." />} />

@@ -76,3 +76,9 @@ Start the backend on the configured `VITE_API_BASE_URL`, apply its migrations, a
 ## Deployment
 
 Serve the generated `dist/` directory with a static host. Configure the host to serve `index.html` for application routes such as `/customers` and `/services`, so direct links and browser refresh work with `BrowserRouter`.
+
+## Account management
+
+Administrators can manage accounts at `/users`. The list includes last recorded activity; the create/edit dialogs follow the Figma user-management screens. The current administrator's role/status controls are disabled, and the API also prevents self-lockout. Other account changes are validated by the API; deactivation or role changes revoke that user's sessions.
+
+The password field is only shown when creating an account, uses the Figma eight-character minimum (and bcrypt's 72-byte maximum), and is never persisted in browser storage.

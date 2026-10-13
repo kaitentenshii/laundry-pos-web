@@ -1,7 +1,7 @@
 import { env } from '../config/env'
 
 export class ApiError extends Error {
-  constructor(public readonly status: number, public readonly code: string, message: string) {
+  constructor(public readonly status: number, public readonly code: string, message: string, public readonly fields: Record<string, string> = {}) {
     super(message)
     this.name = 'ApiError'
   }
@@ -36,7 +36,10 @@ export async function apiRequest(path: string, options: RequestInit = {}, token?
     const body: unknown = await response.json().catch(() => null)
     const code = typeof body === 'object' && body !== null && 'error' in body && typeof body.error === 'object' && body.error !== null && 'code' in body.error && typeof body.error.code === 'string' ? body.error.code : ''
     const fallback = response.status === 401 ? messages.unauthorized : response.status === 429 ? 'Terlalu banyak percobaan. Coba lagi sebentar.' : 'Server belum dapat memproses permintaan. Silakan coba lagi.'
-    throw new ApiError(response.status, code, messages[code] ?? fallback)
+    const detail = typeof body === 'object' && body !== null && 'error' in body && typeof body.error === 'object' && body.error !== null ? body.error as Record<string, unknown> : {}
+    const fields = typeof detail.fields === 'object' && detail.fields !== null ? Object.fromEntries(Object.entries(detail.fields).filter((entry): entry is [string, string] => typeof entry[1] === 'string')) : {}
+    const validationMessage = ['validation_error', 'conflict', 'not_found'].includes(code) && typeof detail.message === 'string' ? detail.message : undefined
+    throw new ApiError(response.status, code, messages[code] ?? validationMessage ?? fallback, fields)
   }
   return response
 }
