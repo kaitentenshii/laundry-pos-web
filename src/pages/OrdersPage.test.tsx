@@ -15,6 +15,7 @@ beforeEach(() => {
   sessionStorage.clear(); saveSession(parseLoginResponse({ access_token: 'list-token', token_type: 'Bearer', expires_in: 3600, user }))
   vi.stubGlobal('fetch', vi.fn(async (url: string, options: RequestInit = {}) => {
     if (url.endsWith('/auth/me')) return new Response(JSON.stringify({ user }))
+    if (url.endsWith('/laundry/identity')) return new Response(JSON.stringify({ data: { name: 'Laundry Mitra' } }))
     if (options.method === 'PATCH') { const body = JSON.parse(options.body as string); changes.push(body); if (transitionFailure === 'network') throw new TypeError('Network offline'); if (transitionFailure === 'conflict') return new Response(JSON.stringify({ error: { code: 'conflict', message: 'Status pesanan sudah berubah.' } }), { status: 409 }); currentOrder.status = body.status; return new Response(JSON.stringify({ data: currentOrder })) }
     if (url.endsWith('/orders/1')) return new Response(JSON.stringify({ data: currentOrder }))
     const params = new URL(url, 'http://localhost').searchParams
