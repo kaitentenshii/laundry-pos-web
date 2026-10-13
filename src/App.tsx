@@ -13,6 +13,7 @@ import { NewOrderPage } from './pages/NewOrderPage'
 import { OrdersPage } from './pages/OrdersPage'
 import { OrderDetailPage } from './pages/OrderDetailPage'
 import { PaymentPage } from './pages/PaymentPage'
+import { ReportsPage } from './pages/ReportsPage'
 
 export default function App() {
   return (
@@ -31,7 +32,7 @@ export default function App() {
             <Route path="users" element={<UsersPage />} />
             <Route path="services" element={<ServicesPage />} />
             <Route path="settings" element={<PlannedFeaturePage title="Pengaturan" description="Pengaturan laundry." />} />
-            <Route path="reports" element={<PlannedFeaturePage title="Laporan" description="Belum ada laporan yang dapat ditampilkan." />} />
+            <Route path="reports" element={<ReportsPage />} />
           </Route>
           <Route path="*" element={<NotFoundPage />} />
         </Route>
