@@ -28,10 +28,12 @@ it('lists persisted order data, paginates, and opens order detail', async () => 
 })
 it('combines date/payment/status filters and resets pagination', async () => {
   open(); await screen.findByRole('table')
+  fireEvent.change(screen.getByLabelText('Cari pesanan'), { target: { value: 'Nadia' } })
+  fireEvent.click(screen.getByRole('button', { name: 'Cari' }))
   fireEvent.change(screen.getByLabelText('Tanggal masuk'), { target: { value: '2026-10-14' } })
   fireEvent.change(screen.getByLabelText('Pembayaran'), { target: { value: 'PAID' } })
   fireEvent.click(screen.getByRole('button', { name: 'Selesai' }))
   await screen.findByText('Belum ada pesanan yang sesuai')
   const calls = vi.mocked(fetch).mock.calls.map(call => String(call[0]))
-  expect(calls.some(url => url.includes('status=COMPLETED') && url.includes('payment_status=PAID') && url.includes('from=2026-10-14'))).toBe(true)
+  expect(calls.some(url => url.includes('q=Nadia') && url.includes('status=COMPLETED') && url.includes('payment_status=PAID') && url.includes('from=2026-10-14'))).toBe(true)
 })
