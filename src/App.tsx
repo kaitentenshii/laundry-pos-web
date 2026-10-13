@@ -10,6 +10,8 @@ import { UsersPage } from './pages/UsersPage'
 import { CustomersPage } from './pages/CustomersPage'
 import { ServicesPage } from './pages/ServicesPage'
 import { NewOrderPage } from './pages/NewOrderPage'
+import { OrdersPage } from './pages/OrdersPage'
+import { OrderDetailPage } from './pages/OrderDetailPage'
 
 export default function App() {
   return (
@@ -19,7 +21,8 @@ export default function App() {
         <Route element={<AppLayout />}>
           <Route index element={<HomePage />} />
           <Route path="customers" element={<CustomersPage />} />
-          <Route path="orders" element={<PlannedFeaturePage title="Pesanan" description="Belum ada pesanan yang dapat ditampilkan." />} />
+          <Route path="orders" element={<OrdersPage />} />
+          <Route path="orders/:id" element={<OrderDetailPage />} />
           <Route path="orders/new" element={<NewOrderPage />} />
           <Route path="notifications" element={<PlannedFeaturePage title="Notifikasi WhatsApp" description="Belum ada notifikasi yang dapat ditampilkan." />} />
           <Route element={<RequireRole roles={['admin']} />}>

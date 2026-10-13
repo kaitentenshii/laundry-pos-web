@@ -141,3 +141,11 @@
 @media (max-width: 600px) { .order-item-fields { grid-template-columns: minmax(0, 1fr); } .order-total { font-size: 32px; } }
 .order-line { display: flex; flex-direction: column; gap: 20px; }
 .order-number { font-size: 24px; color: var(--teal); letter-spacing: 0.03em; }
+.order-tabs { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 24px; }
+.workspace .order-tabs .login-button { min-width: 120px; flex: 1; }
+.order-filters { display: flex; align-items: end; flex-wrap: wrap; gap: 16px; margin-bottom: 24px; }
+.order-filters .login-field { flex: 1; min-width: 160px; }
+.status-washing { color: #356795; }
+.status-completed { color: #146b58; }
+.status-received,.status-picked_up { color: #6b7f79; }
+.payment-unpaid { color: #98611f; }
