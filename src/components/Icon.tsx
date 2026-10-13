@@ -7,8 +7,9 @@ import bag from '../assets/icons/bag.svg'
 import brand from '../assets/icons/brand.svg'
 import bell from '../assets/icons/bell.svg'
 import check from '../assets/icons/check.svg'
+import clock from '../assets/icons/clock.svg'
 
-const icons = { grid, settings, users, chat, wash, bag, brand, bell, check }
+const icons = { grid, settings, users, chat, wash, bag, brand, bell, check, clock }
 export type IconName = keyof typeof icons
 export function Icon({ name }: { name: IconName }) {
   return <span className={`workspace-icon ${name === 'brand' ? 'workspace-brand-icon' : ''}`} aria-hidden="true"><img src={icons[name]} alt="" /></span>
