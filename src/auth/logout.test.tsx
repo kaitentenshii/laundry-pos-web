@@ -1,7 +1,7 @@
 import { cleanup, fireEvent, render, screen } from '@testing-library/react'
 import { afterEach, beforeEach, expect, it, vi } from 'vitest'
 import { MemoryRouter } from 'react-router'
-import App from '../App'
+import App from './TestApp'
 import { AuthProvider } from './AuthProvider'
 import { SESSION_KEY } from './session'
 

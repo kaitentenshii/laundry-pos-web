@@ -7,6 +7,7 @@ import { LoginPage } from './pages/LoginPage'
 import { RequireAuth } from './auth/RequireAuth'
 import { RequireRole } from './auth/RequireRole'
 import { UsersPage } from './pages/UsersPage'
+import { CustomersPage } from './pages/CustomersPage'
 
 export default function App() {
   return (
@@ -15,7 +16,7 @@ export default function App() {
       <Route element={<RequireAuth />}>
         <Route element={<AppLayout />}>
           <Route index element={<HomePage />} />
-          <Route path="customers" element={<PlannedFeaturePage title="Customers" description="Customer management will be available here in a future update." />} />
+          <Route path="customers" element={<CustomersPage />} />
           <Route path="orders" element={<PlannedFeaturePage title="Pesanan" description="Belum ada pesanan yang dapat ditampilkan." />} />
           <Route path="notifications" element={<PlannedFeaturePage title="Notifikasi WhatsApp" description="Belum ada notifikasi yang dapat ditampilkan." />} />
           <Route element={<RequireRole roles={['admin']} />}>

@@ -78,3 +78,6 @@
   .workspace-dialog { padding: 24px; max-height: calc(100svh - 32px); }
   .form-row { grid-template-columns: 1fr; }
 }
+.field-hint { color: #6b7f79; font-size: 13px; margin: 0; }
+.workspace-form textarea { width: 100%; min-height: 80px; resize: vertical; border: 1px solid #dfe7e1; border-radius: 12px; padding: 14px 16px; font: inherit; color: #173c37; background: white; }
+.workspace-form textarea:focus { outline: 2px solid #146b58; outline-offset: 2px; }
