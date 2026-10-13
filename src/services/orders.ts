@@ -1,6 +1,6 @@
 export type OrderItem = { id: number; service_id: number; price_version_id: number; service_name: string; unit: 'KG' | 'ITEM'; unit_price: number; quantity_milli: number; subtotal: number }
 export type Payment = { id: number; order_id: number; order_number: string; method: 'CASH' | 'TRANSFER' | 'QRIS'; amount_received: number; amount_settled: number; change_amount: number; paid_at: string; creator_name: string; notes: string }
-export type OrderStatusHistory = { id: number; from_status: string; to_status: string; changed_by: number; actor_name: string; changed_at: string }
+export type OrderStatusHistory = { id: number; from_status: string; to_status: string; changed_by: number; actor_name: string; changed_at: string; handover_confirmed?: boolean }
 export type Order = { id: number; order_number: string; customer_id: number; customer_name: string; customer_whatsapp: string; customer_opt_in: boolean; created_by: number; creator_name: string; due_at: string; notes: string; status: string; payment_status: string; total: number; paid_amount: number; balance: number; created_at: string; updated_at: string; items: OrderItem[]; payment?: Payment; allowed_next_statuses?: string[]; pickup_blocked_reason?: string; history?: OrderStatusHistory[] }
 export const paymentMethodLabels = { CASH: 'Tunai', TRANSFER: 'Transfer bank', QRIS: 'QRIS' }
 export function canTransition(order: Pick<Order, 'status' | 'payment_status' | 'allowed_next_statuses'>, to: string) {

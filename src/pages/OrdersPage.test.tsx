@@ -63,3 +63,19 @@ it('retains a transition request key on network retry and requires reload after 
   expect((screen.getByRole('button', { name: 'Ya, mulai dicuci' }) as HTMLButtonElement).disabled).toBe(true)
   expect(screen.getByRole('button', { name: 'Muat ulang pesanan' })).toBeTruthy()
 })
+it('requires completed and paid state before showing handover confirmation', async () => {
+  currentOrder.status = 'COMPLETED'; currentOrder.payment_status = 'PAID'
+  render(<MemoryRouter initialEntries={['/orders/1']}><AuthProvider><App /></AuthProvider></MemoryRouter>)
+  fireEvent.click(await screen.findByRole('button', { name: 'Tandai diambil' }))
+  expect(screen.getByText('Pesanan sudah selesai dan lunas. Pastikan pelanggan menerima seluruh cucian.')).toBeTruthy()
+  fireEvent.click(screen.getByRole('button', { name: 'Ya, pesanan diambil' }))
+  await screen.findByText('Cucian sudah diserahkan kepada pelanggan.')
+  expect(changes[0]).toMatchObject({ from_status: 'COMPLETED', status: 'PICKED_UP', handover_confirmed: true })
+  expect(screen.queryByRole('button', { name: 'Tandai diambil' })).toBeNull()
+})
+it('shows the unpaid pickup reason and hides the handover action', async () => {
+  currentOrder.status = 'COMPLETED'; currentOrder.payment_status = 'UNPAID'
+  render(<MemoryRouter initialEntries={['/orders/1']}><AuthProvider><App /></AuthProvider></MemoryRouter>)
+  await screen.findByText('Lunasi pembayaran sebelum menyerahkan cucian kepada pelanggan.')
+  expect(screen.queryByRole('button', { name: 'Tandai diambil' })).toBeNull()
+})
