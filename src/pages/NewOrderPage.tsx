@@ -56,7 +56,7 @@ export function NewOrderPage() {
       const body = await response.json() as { data: Order }; setCreated(body.data)
     } catch (failure) { setError(failure instanceof Error ? failure.message : 'Pesanan belum dapat disimpan.'); if (failure instanceof ApiError) { setErrors(failure.fields); if (failure.fields.expected_total) services.reload() } } finally { setBusy(false) }
   }
-  if (created) return <section className="feedback-panel"><h1>Pesanan berhasil disimpan</h1><p>{created.order_number} · {created.customer_name}</p><p>{money(created.total)} · Diterima · Belum lunas</p><Button onClick={() => navigate('/orders')}>Kembali ke pesanan</Button></section>
+  if (created) return <section className="feedback-panel"><h1>Pesanan berhasil disimpan</h1><strong className="order-number" aria-label="Nomor pesanan">{created.order_number}</strong><p>{created.customer_name}</p><p>{money(created.total)} · Diterima · Belum lunas</p><Button onClick={() => navigate('/orders')}>Kembali ke pesanan</Button></section>
   return <>
     <header className="page-heading"><h1>Catat pesanan baru</h1><p>Masukkan pelanggan, layanan, dan rincian cucian.</p></header>
     {(customers.error || services.error) && <section className="feedback-panel feedback-error" role="alert"><p>{customers.error || services.error}</p><Button onClick={() => { customers.reload(); services.reload() }}>Coba lagi</Button></section>}

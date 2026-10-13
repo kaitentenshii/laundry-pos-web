@@ -33,6 +33,7 @@ it('creates an order from registered contact and a valid service', async () => {
   await screen.findByRole('heading', { name: 'Pesanan berhasil disimpan' })
   expect(posts[0]).toMatchObject({ customer_id: 1, items: [{ service_id: 1, quantity: '4' }] })
   expect(posts[0]).not.toHaveProperty('customer_whatsapp'); expect(posts[0].request_key).toBeTruthy()
+  expect(screen.getByLabelText('Nomor pesanan').textContent).toBe('LD-1')
 })
 it('validates pcs quantity and preserves the request key when retrying a failed save', async () => {
   await open(); fill(); fireEvent.change(screen.getByLabelText('Layanan *'), { target: { value: '2' } })
