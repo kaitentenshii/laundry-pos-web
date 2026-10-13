@@ -160,3 +160,13 @@
 .order-search { display: flex; align-items: end; gap: 16px; margin-bottom: 24px; }
 .order-search .login-field { flex: 1; min-width: 0; }
 @media (max-width: 600px) { .workspace .order-search .login-button { min-width: 76px; } }
+.payment-grid { grid-template-columns: minmax(0,672fr) minmax(320px,424fr); }
+.payment-methods { border: 0; padding: 0; margin: 0; display: flex; flex-wrap: wrap; gap: 12px; }
+.payment-methods legend { font-size: 13px; font-weight: 500; margin-bottom: 12px; }
+.workspace .payment-methods .login-button { flex: 1; min-width: 100px; }
+.payment-warning { background: #fff1d9; color: #98611f; margin: 0; }
+.payment-change { background: var(--mint); padding: 20px; border-radius: 12px; color: var(--teal); }
+.payment-change strong { font-size: 32px; }
+.payment-confirm { display: flex; align-items: center; gap: 12px; font-size: 14px; }
+.payment-confirm input { accent-color: var(--teal); width: 18px; height: 18px; }
+@media (max-width: 1000px) { .payment-grid { grid-template-columns: minmax(0,1fr); } }
