@@ -11,6 +11,7 @@ beforeEach(() => {
   saveSession(parseLoginResponse({ access_token: 'service-token', token_type: 'Bearer', expires_in: 3600, user }))
   vi.stubGlobal('fetch', vi.fn(async (url: string, options: RequestInit = {}) => {
     if (url.endsWith('/auth/me')) return new Response(JSON.stringify({ user }))
+    if (url.endsWith('/prices')) return new Response(JSON.stringify({ data: [{ id: 1, name: 'Cuci', unit: 'KG', price: 8000, estimated_hours: 48, created_at: '2026-10-13T00:00:00Z' }] }))
     if (options.method) { const body = JSON.parse(options.body as string); if (options.method === 'POST') records.push({ id: 1, ...body }); else records[0] = { id: 1, ...body }; return new Response(JSON.stringify({ data: records[0] })) }
     return new Response(JSON.stringify({ data: records }))
   }))
@@ -34,4 +35,11 @@ it('rejects negative pricing and edits the existing service', async () => {
   fireEvent.change(screen.getByLabelText('Harga per satuan (Rp) *'), { target: { value: '9000' } })
   fireEvent.change(screen.getByLabelText('Estimasi pengerjaan (jam) *'), { target: { value: '6' } })
   fireEvent.click(screen.getByRole('button', { name: 'Simpan layanan' })); await screen.findByText('Layanan berhasil diperbarui.'); await screen.findByText('6 jam'); expect(records).toHaveLength(1)
+})
+it('shows preserved pricing versions from the API', async () => {
+  records = [{ id: 1, name: 'Cuci', unit: 'KG', price: 9000, estimated_hours: 48, is_active: true }]
+  open(); fireEvent.click(await screen.findByRole('button', { name: 'Riwayat harga Cuci' }))
+  await screen.findByText(/8\.000.*kg/)
+  expect(screen.getByRole('dialog').textContent).toContain('Versi sebelumnya tetap tersimpan')
+  fireEvent.click(screen.getByRole('button', { name: 'Tutup' })); expect(screen.queryByRole('dialog')).toBeNull()
 })

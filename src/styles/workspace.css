@@ -111,3 +111,7 @@
 .customer-content .workspace-table th:nth-child(3) { width: 12%; }
 .customer-content .workspace-table th:nth-child(4) { width: 24%; }
 .customer-content .workspace-table th:nth-child(5) { width: 11%; }
+.price-history { list-style: none; padding: 0; margin: 0 0 20px; display: flex; flex-direction: column; gap: 16px; }
+.price-history li { border: 1px solid #dfe7e1; border-radius: 12px; padding: 16px; display: flex; flex-direction: column; gap: 8px; }
+.price-history time { color: #6b7f79; font-size: 12px; }
+.services-table .table-action { display: block; text-align: left; margin: 4px 0; }
